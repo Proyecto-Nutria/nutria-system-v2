@@ -1,19 +1,10 @@
 CREATE OR REPLACE FUNCTION insert_role_or_reject()
 RETURNS trigger AS $$
 DECLARE
-    no_role constant VARCHAR(2) := 'na';
     user_role VARCHAR(11);
 BEGIN
-    -- Check if the invitation exist in the invitations table
-    SELECT coalesce(
-        (SELECT role FROM invitations where email = NEW.email),
-        no_role
-    ) INTO user_role;
-
-    -- If there is no invitation raise an exception
-    IF user_role = no_role THEN
-        RAISE EXCEPTION 'No invitation';
-    END IF;
+    -- Get the user role from the invitation table
+    SELECT role FROM invitations where email = NEW.email;
 
     -- Update the invitation table
     UPDATE invitations SET used = true WHERE email = NEW.email;
