@@ -20,25 +20,24 @@ function (user, context, callback) {
         }
       }`
 
-  request.post(
-    {
-      headers: {
-        'content-type': 'application/json',
-        'x-hasura-admin-secret': adminSecret
-      },
-      url: url,
-      body: JSON.stringify(
-        {
-          query: mutation,
-          variables: {
-            userId,
-            nickname,
-            email
-          }
-        })
+  const options = {
+    headers: {
+      'content-type': 'application/json',
+      'x-hasura-admin-secret': adminSecret
     },
-    function (error, _response, body) {
-      console.log(body)
-      callback(error, user, context)
-    })
+    url: url,
+    body: JSON.stringify(
+      {
+        query: mutation,
+        variables: {
+          userId,
+          nickname,
+          email
+        }
+      })
+  }
+
+  request.post(
+    options,
+    (error, _response, _body) => callback(error, user, context))
 }
