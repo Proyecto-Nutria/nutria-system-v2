@@ -17,9 +17,7 @@ exports.handler = async (event) => {
     )
   }
 
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({ sum: 'Email Sent' })
+  return {
+    statusCode: 200
   }
-  return response
 }

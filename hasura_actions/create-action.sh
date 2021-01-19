@@ -1,7 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ $# -eq 0 ]; then
     echo "Error: No arguments provided"
+    exit 1
+fi
+
+array=(upload-resume)
+if [[ ! ${array[*]} =~ $1 ]]; then
+    echo "Error: Action not in aws_lambdas"
     exit 1
 fi
 
