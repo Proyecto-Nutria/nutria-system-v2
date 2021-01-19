@@ -1,0 +1,51 @@
+<mjml>
+  <mj-head>
+    <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,500"></mj-font>
+    <mj-attributes>
+      <mj-all font-family="Roboto, Helvetica, sans-serif"></mj-all>
+      <mj-text font-weight="300" font-size="16px" color="#616161" line-height="24px"></mj-text>
+      <mj-section padding="0px"></mj-section>
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column width="100%">
+        <mj-image src="https://raw.githubusercontent.com/Proyecto-Nutria/nutria-system/goberinfinity/nutria-email/functions/template/images/nutria_header.png"></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column width="80%">
+        <mj-text align="center" font-weight="500" padding="0px" font-size="18px">Nutria Interview Detaills</mj-text>
+        <mj-divider border-width="2px" border-color="#616161"></mj-divider>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column width="100%">
+        <mj-text>
+          <p>Hello [[username]]!</p>
+          <p> We have scheduled an interview for you. </p>
+          <p> Remember to be in the [[discordroom]] at [[interview]], the google docs where the interview is going to happen is: [[googledoc]].</p>
+          <p>Best regards</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column width="25%">
+        <mj-table>
+          <tr style="list-style: none;line-height:1">
+            <td> <a href="https://www.facebook.com/ProyectoNutria">
+                <img width="28" src="https://cdn.recast.ai/newsletter/facebook.png" />
+              </a> </td>
+            <td> <a href="https://www.youtube.com/channel/UCpP8qy7oFHc4B9dv9-fOtrg">
+                <img width="28" src="https://cdn.recast.ai/newsletter/youtube.png" />
+              </a> </td>
+          </tr>
+        </mj-table>
+      </mj-column>
+      <mj-column width="75%">
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
