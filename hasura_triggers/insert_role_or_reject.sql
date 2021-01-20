@@ -4,7 +4,7 @@ DECLARE
     user_role VARCHAR(11);
 BEGIN
     -- Get the user role from the invitation table
-    SELECT role FROM invitations where email = NEW.email;
+    SELECT role FROM invitations where email = NEW.email INTO user_role;
 
     -- Update the invitation table
     UPDATE invitations SET used = true WHERE email = NEW.email;

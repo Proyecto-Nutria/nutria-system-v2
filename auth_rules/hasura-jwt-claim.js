@@ -8,7 +8,8 @@ function (user, context, callback) {
   const invitationQuery = `query getInvitation {
       invitations(where: {email: {_eq: "${email}"}}) {
           email,
-          role
+          role,
+          used
         }
       }`
 
@@ -31,11 +32,13 @@ function (user, context, callback) {
       const invitation = graphqlResponse.data.invitations
       if (invitation.length === 0) callback(new UnauthorizedError('No Invitation'), user, context)
       const role = invitation[0].role
+      const used = !invitation[0].used;
       context.accessToken[namespace] = {
         'x-hasura-role': role,
         'x-hasura-allowed-roles': ['interviewee', 'interviewer'],
         'x-hasura-user-id': user.user_id
       }
+      context.idToken[namespace] = {role: role, firstTime: used}
       callback(null, user, context)
     })
 }
