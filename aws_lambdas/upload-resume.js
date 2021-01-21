@@ -1,17 +1,20 @@
+const fs = require('fs')
 const {
   GoogleFactory,
   DRIVE_API,
   PDF_TYPE,
   FOLDER_TYPE
 } = require('./models')
-const fs = require('fs')
 
 exports.handler = async (event) => {
   const encoding = 'base64'
   const filename = 'resume.pdf'
-  const intervieweeId = '0123'
 
-  const fileBuffer = Buffer.from(event.input, encoding)
+  const parsedBody = JSON.parse(event.body)
+  const userId = parsedBody.session_variables['x-hasura-user-id']
+  const resume = parsedBody.input.resume
+
+  const fileBuffer = Buffer.from(resume, encoding)
   const path = `/tmp/${filename}`
 
   try {
@@ -21,7 +24,7 @@ exports.handler = async (event) => {
   }
 
   const driveAPI = new GoogleFactory(DRIVE_API)
-  const folderId = await driveAPI.createResource(intervieweeId, FOLDER_TYPE)
+  const folderId = await driveAPI.createResource(userId, FOLDER_TYPE)
 
   const readStream = fs.createReadStream(path)
   await driveAPI.createResource(
@@ -33,6 +36,6 @@ exports.handler = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ folderId: folderId })
+    body: JSON.stringify({ id: folderId })
   }
 }
