@@ -34,6 +34,7 @@ function (user, context, callback) {
       const role = invitation[0].role
       const used = !invitation[0].used;
       context.accessToken[namespace] = {
+        'x-hasura-default-role': role,
         'x-hasura-role': role,
         'x-hasura-allowed-roles': ['interviewee', 'interviewer'],
         'x-hasura-user-id': user.user_id
