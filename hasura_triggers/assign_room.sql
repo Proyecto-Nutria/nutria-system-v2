@@ -4,7 +4,7 @@ DECLARE
     last_occupied_room smallint;
 BEGIN
     -- Get the last ocuppied room
-    SELECT last_room FROM room where id = 1 INTO last_occupied_room;
+    SELECT last_room FROM room WHERE id = 1 INTO last_occupied_room;
 
     -- Reset the room if you reached the limit
     IF last_occupied_room = 10 THEN

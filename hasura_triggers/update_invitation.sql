@@ -4,7 +4,7 @@ DECLARE
     used_invitation BOOLEAN;
 BEGIN
     -- Get the used field of invitation table
-    SELECT used FROM invitations where email = NEW.email INTO used_invitation;
+    SELECT used FROM invitations WHERE email = NEW.email INTO used_invitation;
 
     -- Update the invitation table
     IF used_invitation = false THEN
