@@ -5,8 +5,8 @@ const {
   DRIVE_API,
   PDF_TYPE,
   FOLDER_TYPE,
-  DOC_TYPE
-} = require('./GoogleFactory')
+  DOC_TYPE,
+} = require("./GoogleFactory");
 
 module.exports = {
   GoogleFactory,
@@ -15,5 +15,5 @@ module.exports = {
   DRIVE_API,
   PDF_TYPE,
   FOLDER_TYPE,
-  DOC_TYPE
-}
+  DOC_TYPE,
+};

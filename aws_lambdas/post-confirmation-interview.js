@@ -7,17 +7,22 @@ const {
   FOLDER_TYPE,
 } = require("./models");
 
+const { Time } = require("./utils");
+
 exports.handler = async (event) => {
   const data = JSON.parse(event.body).event.data.new;
   const interviewerEmail = data.interviewer_email;
   const intervieweeEmail = data.interviewee_email;
   const intervieweeId = data.interviewee_id;
-  const interviewDate = data.date;
+  const interviewDate = Time.castToDateFromStr(data.date);
+  const interviewDay = Time.getReadableDateFrom(interviewDate);
+  const interviewHour = Time.getHoursFrom(interviewDate);
+  const interviewDateAsTimestamp = Time.getTimestampFrom(interviewDate);
   const interviewRoom = data.room;
 
-  //TODO: See how to parse between hasura date type and google date type
+  //TODO: See how google calendar takes the timestamp from database
   // const calendarAPI = new GoogleFactory(CALENDAR_API);
-  // calendarAPI.createEvent(interviewRoom, interviewDate, interviewerEmail);
+  // calendarAPI.createEvent(interviewRoom, interviewDateAsTimestamp, interviewerEmail);
 
   // Step 1: Search interviewee's google folder
   const driveAPI = new GoogleFactory(DRIVE_API);
@@ -39,8 +44,8 @@ exports.handler = async (event) => {
   await gmailAPI.sendConfirmationEmail(
     intervieweeEmail,
     interviewRoom,
-    interviewDate,
-    "0:00", // interviewBeginning
+    interviewDay,
+    interviewHour,
     docId
   );
 

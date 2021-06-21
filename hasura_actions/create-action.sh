@@ -24,10 +24,10 @@ mv $1.js index.js
 
 # zip only the necessary elements for the lambda
 echo "Zipping the content of the lambda"
-zip -r $1.zip ./config ./models ./node_modules ./template ./package.json ./package-lock.json index.js
+zip -r $1.zip ./config ./models ./node_modules ./template ./utils ./package.json ./package-lock.json index.js
 
 # Return the file to its origina name
-echo "Returing index.js to $1"
+echo "Returning index.js to $1"
 mv index.js $1.js
 
 # Move the zip file to its destination folder
