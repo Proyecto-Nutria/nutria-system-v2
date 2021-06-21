@@ -3,9 +3,8 @@ const { Time } = require("./utils");
 
 exports.handler = async (event) => {
   const data = JSON.parse(event.body).event.data.old;
-
   const emails = [data.interviewee_email, data.interviewer_email];
-  const interviewDate = data.date;
+  const interviewDate = Time.castToDateFromStr(data.date);
   const interviewDay = Time.getReadableDateFrom(interviewDate);
   const interviewHour = Time.getHoursFrom(interviewDate);
 
