@@ -6,8 +6,9 @@ exports.handler = async (event) => {
   const filename = "resume.pdf";
 
   const parsedBody = JSON.parse(event.body);
-  const userId = parsedBody.session_variables["x-hasura-user-id"];
+  const intervieweeId = parsedBody.session_variables["x-hasura-user-id"];
   const resume = parsedBody.input.resume;
+  const newUser = parsedBody.input.firstTime;
 
   const fileBuffer = Buffer.from(resume, encoding);
   const path = `/tmp/${filename}`;
@@ -19,7 +20,12 @@ exports.handler = async (event) => {
   }
 
   const driveAPI = new GoogleFactory(DRIVE_API);
-  const folderId = await driveAPI.createResource(userId, FOLDER_TYPE);
+  let folderId = "";
+  if (newUser) {
+    folderId = await driveAPI.createResource(intervieweeId, FOLDER_TYPE);
+  } else {
+    folderId = await driveAPI.getResourceId(FOLDER_TYPE, intervieweeId);
+  }
 
   const readStream = fs.createReadStream(path);
   await driveAPI.createResource(filename, PDF_TYPE, folderId, readStream);
