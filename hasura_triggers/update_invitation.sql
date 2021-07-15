@@ -10,6 +10,8 @@ BEGIN
     IF used_invitation = false THEN
         UPDATE invitations SET used = true WHERE email = NEW.email;
     END IF;
+
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
