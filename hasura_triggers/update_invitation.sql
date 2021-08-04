@@ -17,8 +17,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS update_invitation_trigger ON "interviewees";
-CREATE TRIGGER update_invitation_trigger
+DROP TRIGGER IF EXISTS update_invitation_interviewee_trigger ON "interviewees";
+CREATE TRIGGER update_invitation_interviewee_trigger
     AFTER INSERT ON "interviewees"
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_invitation();
+
+DROP TRIGGER IF EXISTS update_invitation_interviewer_trigger ON "interviewers";
+CREATE TRIGGER update_invitation_interviewer_trigger
+    AFTER INSERT ON "interviewers"
     FOR EACH ROW
     EXECUTE PROCEDURE update_invitation();
