@@ -8,9 +8,11 @@ const {
 } = require("./models");
 
 const { Time } = require("./utils");
+const request = require("request");
 
 exports.handler = async (event) => {
   const data = JSON.parse(event.body).event.data.new;
+  const interviewId = data.id;
   const interviewerEmail = data.interviewer_email;
   const intervieweeEmail = data.interviewee_email;
   const intervieweeId = data.interviewee_id;
@@ -19,6 +21,9 @@ exports.handler = async (event) => {
   const interviewHour = Time.getHoursFrom(interviewDate);
   const interviewDateAsTimestamp = Time.getTimestampFrom(interviewDate);
   const interviewRoom = data.room;
+
+  const adminSecret = process.env.ACCESS_KEY;
+  const url = process.env.HASURA_URL;
 
   //TODO: See how google calendar takes the timestamp from database
   // const calendarAPI = new GoogleFactory(CALENDAR_API);
@@ -48,6 +53,29 @@ exports.handler = async (event) => {
     interviewHour,
     docId
   );
+
+  //Step 4: Update Hasura with the document id
+  const mutation = `mutation($interviewId: Int!){
+    update_interviews(_set: {document: "${docId}"}, where: {id: {_eq: $interviewId}}) {
+      affected_rows
+    }
+  }`;
+
+  const options = {
+    headers: {
+      "content-type": "application/json",
+      "x-hasura-admin-secret": adminSecret,
+    },
+    url: url,
+    body: JSON.stringify({
+      query: mutation,
+      variables: {
+        interviewId,
+      },
+    }),
+  };
+
+  request.post(options, (error, _response, _body) => console.error(error));
 
   return {
     statusCode: 200,
