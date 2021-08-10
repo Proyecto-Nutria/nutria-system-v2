@@ -8,9 +8,9 @@ const {
 } = require("./models");
 
 const { Time } = require("./utils");
-const request = require("request");
+const request = require("request-promise");
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   const data = JSON.parse(event.body).event.data.new;
   const interviewId = data.id;
   const interviewerEmail = data.interviewer_email;
@@ -75,9 +75,11 @@ exports.handler = async (event) => {
     }),
   };
 
-  request.post(options, (error, _response, _body) => console.error(error));
+  await request.post(options, (error, _response, _body) => {
+    if (error) {
+      return { statusCode: 500 };
+    }
+  });
 
-  return {
-    statusCode: 200,
-  };
+  return { statusCode: 200 };
 };
