@@ -10,7 +10,7 @@ const {
 const { Time } = require("./utils");
 const request = require("request-promise");
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   const data = JSON.parse(event.body).event.data.new;
   const interviewId = data.id;
   const interviewerEmail = data.interviewer_email;

@@ -5,7 +5,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-array=(post-cancellation-interview post-confirmation-interview)
+array=(post-cancellation-interview post-confirmation-interview remove-pool)
 if [[ ! ${array[*]} =~ $1 ]]; then
     echo "Error: Event not in aws_lambdas"
     exit 1
