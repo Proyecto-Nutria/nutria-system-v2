@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION decrease_or_erase_pool()
 RETURNS trigger AS $$
 BEGIN
     -- If there are no more awating interviews to be made, erase it from pool
-    IF NEW.awaiting = 0 AND OLD.awaiting = 1 THEN
+    IF OLD.awaiting = NEW.scheduled THEN
         DELETE FROM pools WHERE id = NEW.id;
         RETURN NULL;
     END IF;
