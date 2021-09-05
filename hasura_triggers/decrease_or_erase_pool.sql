@@ -4,19 +4,30 @@
 
 CREATE OR REPLACE FUNCTION decrease_or_erase_pool()
 RETURNS trigger AS $$
+DECLARE
+    pool_awaiting smallint;
+    pool_scheduled smallint;
 BEGIN
-    -- If there are no more awating interviews to be made, erase it from pool
-    IF OLD.awaiting = NEW.scheduled THEN
-        DELETE FROM pools WHERE id = NEW.id;
-        RETURN NULL;
-    END IF;
+    -- Get the pool id that is going to be modified
+    SELECT awaiting, scheduled
+    FROM pools
+    WHERE interviewee_id = NEW.interviewee_id
+    INTO pool_awaiting, pool_scheduled;
 
+    pool_scheduled := pool_scheduled +1;
+    IF pool_awaiting = pool_scheduled THEN
+        DELETE FROM pools WHERE interviewee_id = NEW.interviewee_id;
+    ELSE
+        UPDATE pools
+        SET scheduled = pool_scheduled
+        WHERE interviewee_id = NEW.interviewee_id;
+    END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS decrease_or_erase_pool_trigger ON "pools";
+DROP TRIGGER IF EXISTS decrease_or_erase_pool_trigger ON "interviews";
 CREATE TRIGGER decrease_or_erase_pool_trigger
-    AFTER UPDATE ON "pools"
+    AFTER INSERT ON "interviews"
     FOR EACH ROW
     EXECUTE PROCEDURE decrease_or_erase_pool();
