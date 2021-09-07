@@ -5,6 +5,8 @@ const {
   GMAIL_API,
   DOC_TYPE,
   FOLDER_TYPE,
+  COUNTRY_TIMEZONE,
+  IANA_TIMEZONE,
 } = require("./models");
 
 const { Time } = require("./utils");
@@ -17,17 +19,20 @@ exports.handler = async (event) => {
   const intervieweeEmail = data.interviewee_email;
   const intervieweeId = data.interviewee_id;
   const interviewDate = Time.castToDateFromStr(data.date);
+  const ptDate = Time.castDateToTimezone(
+    interviewDate,
+    COUNTRY_TIMEZONE,
+    IANA_TIMEZONE
+  );
+  const diffWithPT = interviewDate.getTime() - ptDate.getTime();
   const interviewDay = Time.getReadableDateFrom(interviewDate);
   const interviewHour = Time.getHoursFrom(interviewDate);
-  const interviewDateAsTimestamp = Time.getTimestampFrom(interviewDate);
+  const interviewDateAsTimestamp =
+    Time.getTimestampFrom(interviewDate) + diffWithPT;
   const interviewRoom = data.room;
 
   const adminSecret = process.env.ACCESS_KEY;
   const url = process.env.HASURA_URL;
-
-  //TODO: See how google calendar takes the timestamp from database
-  // const calendarAPI = new GoogleFactory(CALENDAR_API);
-  // calendarAPI.createEvent(interviewRoom, interviewDateAsTimestamp, interviewerEmail);
 
   // Step 1: Search interviewee's google folder
   const driveAPI = new GoogleFactory(DRIVE_API);
@@ -44,7 +49,16 @@ exports.handler = async (event) => {
   );
   driveAPI.changePermissionsOf(docId);
 
-  // Step 3: Send the email to the interviewee with all the information
+  // Step 3: Create the event in the calendar of the interviewer
+  const calendarAPI = new GoogleFactory(CALENDAR_API);
+  calendarAPI.createEvent(
+    interviewRoom,
+    docId,
+    interviewDateAsTimestamp,
+    interviewerEmail
+  );
+
+  // Step 4: Send the email to the interviewee with all the information
   const gmailAPI = new GoogleFactory(GMAIL_API);
   await gmailAPI.sendConfirmationEmail(
     intervieweeEmail,
@@ -54,7 +68,7 @@ exports.handler = async (event) => {
     docId
   );
 
-  //Step 4: Update Hasura with the document id
+  //Step 5: Update Hasura with the document id
   const mutation = `mutation($interviewId: Int!){
     update_interviews(_set: {document: "${docId}"}, where: {id: {_eq: $interviewId}}) {
       affected_rows

@@ -3,6 +3,10 @@ class Time {
     return new Date(dateString);
   }
 
+  static castDateToTimezone(date, country, timezone) {
+    return new Date(date.toLocaleString(country, { timeZone: timezone }));
+  }
+
   static getReadableDateFrom(date) {
     return date.toDateString();
   }

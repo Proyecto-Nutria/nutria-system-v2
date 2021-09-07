@@ -4,6 +4,8 @@ const GMAIL_API = "gmail";
 const PDF_TYPE = "application/pdf";
 const DOC_TYPE = "application/vnd.google-apps.document";
 const FOLDER_TYPE = "application/vnd.google-apps.folder";
+const COUNTRY_TIMEZONE = "en-US";
+const IANA_TIMEZONE = "America/Los_Angeles";
 
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
@@ -43,19 +45,21 @@ class CalendarAPI extends Credentials {
     this.api = google.calendar({ version: "v3" });
   }
 
-  async createEvent(roomNumber, initialDate, interviewerEmail) {
-    const twoHoursInTimestamp = 7200000;
+  async createEvent(roomNumber, gDoc, initialDate, interviewerEmail) {
+    const hourInTimestamp = 3600000;
     const initialNumberDate = Number(initialDate);
+    const gDocURL = `https://docs.google.com/document/d/${gDoc}`;
     const eventData = {
       summary: "Nutria Interview",
       location: `room ${roomNumber}`,
+      description: '<a href="' + gDocURL + '">Docs link</a>',
       start: {
         dateTime: new Date(initialNumberDate),
-        timeZone: "EST",
+        timeZone: IANA_TIMEZONE,
       },
       end: {
-        dateTime: new Date(initialNumberDate + twoHoursInTimestamp),
-        timeZone: "EST",
+        dateTime: new Date(initialNumberDate + hourInTimestamp),
+        timeZone: IANA_TIMEZONE,
       },
       attendees: [{ email: interviewerEmail }],
     };
@@ -226,4 +230,6 @@ module.exports = {
   PDF_TYPE,
   FOLDER_TYPE,
   DOC_TYPE,
+  COUNTRY_TIMEZONE,
+  IANA_TIMEZONE,
 };
