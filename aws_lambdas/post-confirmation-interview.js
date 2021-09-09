@@ -51,7 +51,7 @@ exports.handler = async (event) => {
 
   // Step 3: Create the event in the calendar of the interviewer
   const calendarAPI = new GoogleFactory(CALENDAR_API);
-  calendarAPI.createEvent(
+  await calendarAPI.createEvent(
     interviewRoom,
     docId,
     interviewDateAsTimestamp,
