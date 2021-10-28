@@ -62,6 +62,13 @@ class CalendarAPI extends Credentials {
         timeZone: IANA_TIMEZONE,
       },
       attendees: [{ email: interviewerEmail }],
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: "email", minutes: 60 },
+          { method: "popup", minutes: 10 },
+        ],
+      },
     };
 
     return await this.api.events
@@ -69,6 +76,7 @@ class CalendarAPI extends Credentials {
         auth: super.getAuth,
         calendarId: "primary",
         resource: eventData,
+        sendNotifications: true,
       })
       .catch((e) => {
         console.error(e);
